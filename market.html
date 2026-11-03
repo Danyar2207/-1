@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>📈 Учебная биржа</h2>
+<p class="meta">Цены имитируются случайным блужданием и обновляются каждые 10 секунд. Торгуйте виртуальными монетами — риска для реальных денег нет.</p>
+<div class="grid">
+{% for a in assets %}
+<a class="card-link" href="{% url 'asset_detail' a.symbol %}">
+  <div class="card">
+    <div class="title">{{ a.symbol }} <span class="meta">{{ a.name }}</span></div>
+    <div class="price">{{ a.price|floatformat:"2g" }}</div>
+    <div class="{% if a.change >= 0 %}up{% else %}down{% endif %}">{% if a.change > 0 %}+{% endif %}{{ a.change }}%</div>
+    {% if a.spark %}<svg class="spark" viewBox="0 0 160 44"><polyline points="{{ a.spark }}" fill="none"
+      stroke="{% if a.change >= 0 %}#7dffb0{% else %}#ff9aa8{% endif %}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>{% endif %}
+    {% if a.held > 0 %}<div class="meta">У вас: {{ a.held }}</div>{% endif %}
+  </div>
+</a>
+{% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>{{ asset.symbol }} <span class="meta">{{ asset.name }}</span></h2>
+<div class="card">
+  <div class="stats">
+    <div><div class="meta">Цена</div><div class="price">{{ asset.price|floatformat:"2g" }}</div></div>
+    <div><div class="meta">Изменение (≈5 мин)</div>
+      <div class="price {% if asset.change >= 0 %}up{% else %}down{% endif %}">{% if asset.change > 0 %}+{% endif %}{{ asset.change }}%</div></div>
+    <div><div class="meta">У вас</div><div class="price">{{ held }}</div></div>
+  </div>
+  {% if chart %}
+  <svg class="spark" viewBox="0 0 600 140"><polyline points="{{ chart }}" fill="none" stroke="#38e0c2"
+     stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/></svg>
+  <div class="meta">мин {{ lo }} · макс {{ hi }}</div>
+  {% endif %}
+</div>
+
+<div class="card">
+  {% if user.is_authenticated %}
+  <form method="post" class="trade-form">{% csrf_token %}
+    {{ form.quantity }}
+    <button class="buy" name="side" value="buy">Купить</button>
+    <button class="sell" name="side" value="sell">Продать</button>
+    <small>доступно монет: {{ wallet_available|floatformat:"2g" }}</small>
+  </form>
+  {% for e in form.quantity.errors %}<div class="err">{{ e }}</div>{% endfor %}
+  {% else %}
+  <p class="meta"><a href="{% url 'login' %}?next={{ request.path }}">Войдите</a>, чтобы торговать.</p>
+  {% endif %}
+</div>
+<a class="btn" href="{% url 'market' %}">← К списку</a>
+{% endblock %}

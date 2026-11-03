@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Новый лот</h2>
+<div class="card"><form method="post">{% csrf_token %}{{ form.as_p }}<button>Создать лот</button></form></div>
+{% endblock %}

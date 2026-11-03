@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>💼 Портфель</h2>
+<div class="card"><div class="stats">
+  <div><div class="meta">Монеты</div><div class="price">{{ wallet.balance|floatformat:"2g" }}</div></div>
+  <div><div class="meta">В ставках (резерв)</div><div class="price">{{ reserved|floatformat:"2g" }}</div></div>
+  <div><div class="meta">Активы</div><div class="price">{{ assets_value|floatformat:"2g" }}</div></div>
+  <div><div class="meta">Всего</div><div class="price">{{ net_worth|floatformat:"2g" }}</div></div>
+</div></div>
+
+<h3>Активы</h3>
+<div class="card table"><table>
+<tr><th>Актив</th><th>Кол-во</th><th>Цена</th><th>Стоимость</th></tr>
+{% for h in holdings %}<tr><td><a href="{% url 'asset_detail' h.asset.symbol %}">{{ h.asset.symbol }}</a></td>
+<td>{{ h.quantity }}</td><td>{{ h.asset.price|floatformat:"2g" }}</td><td><b>{{ h.value|floatformat:"2g" }}</b></td></tr>
+{% empty %}<tr><td colspan="4" class="meta">Пока пусто. Загляните на <a href="{% url 'market' %}">биржу</a>.</td></tr>{% endfor %}
+</table></div>
+
+<h3>История сделок</h3>
+<div class="card table"><table>
+<tr><th>Время</th><th>Тип</th><th>Актив</th><th>Кол-во</th><th>Цена</th><th>Сумма</th></tr>
+{% for t in trades %}<tr><td class="meta">{{ t.created_at|date:"d.m H:i:s" }}</td>
+<td class="{% if t.side == 'buy' %}up{% else %}down{% endif %}">{{ t.get_side_display }}</td>
+<td>{{ t.asset.symbol }}</td><td>{{ t.quantity }}</td><td>{{ t.price|floatformat:"2g" }}</td><td>{{ t.total|floatformat:"2g" }}</td></tr>
+{% empty %}<tr><td colspan="6" class="meta">Сделок пока нет.</td></tr>{% endfor %}
+</table></div>
+{% endblock %}

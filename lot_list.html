@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Лоты</h2>
+<div class="filters">
+  <a class="btn {% if status == 'open' %}active{% endif %}" href="?status=open">Активные</a>
+  <a class="btn {% if status == 'closed' %}active{% endif %}" href="?status=closed">Завершённые</a>
+  <a class="btn {% if status == 'all' %}active{% endif %}" href="?status=all">Все</a>
+</div>
+{% for lot in lots %}
+<a class="card-link" href="{% url 'lot_detail' lot.pk %}">
+  <div class="card">
+    <div class="title">{{ lot.title }} <span class="badge {{ lot.status }}">{{ lot.get_status_display }}</span></div>
+    <div class="price">{{ lot.current_price }}</div>
+    <div class="meta">Продавец: {{ lot.owner }} · до {{ lot.ends_at|date:"d.m.Y H:i" }}
+      {% if lot.winner %} · 🏆 {{ lot.winner }}{% endif %}</div>
+  </div>
+</a>
+{% empty %}<div class="card meta">Лотов пока нет. Создайте первый!</div>{% endfor %}
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Мои лоты</h2>
+{% for l in my_lots %}<div class="card"><a href="{% url 'lot_detail' l.pk %}"><b>{{ l.title }}</b></a>
+ <span class="badge {{ l.status }}">{{ l.get_status_display }}</span> · цена <span class="price" style="font-size:1.1rem">{{ l.current_price }}</span></div>
+{% empty %}<div class="card meta">Нет.</div>{% endfor %}
+<h2>Мои ставки</h2>
+{% for b in my_bids %}<div class="card"><a href="{% url 'lot_detail' b.lot.pk %}">{{ b.lot.title }}</a>: <b>{{ b.amount }}</b>
+ <span class="meta">({{ b.created_at|date:"d.m H:i" }})</span></div>
+{% empty %}<div class="card meta">Нет.</div>{% endfor %}
+<h2>Выигранные лоты</h2>
+{% for l in won %}<div class="card win">🏆 <a href="{% url 'lot_detail' l.pk %}">{{ l.title }}</a> за <b>{{ l.final_price }}</b></div>
+{% empty %}<div class="card meta">Нет.</div>{% endfor %}
+{% endblock %}

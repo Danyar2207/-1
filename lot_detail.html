@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>{{ lot.title }} <span class="badge {{ lot.status }}">{{ lot.get_status_display }}</span></h2>
+<div class="card">
+  <p>{{ lot.description|linebreaksbr }}</p>
+  <div class="price">{{ lot.current_price }}</div>
+  <div class="meta">Продавец: {{ lot.owner }} · окончание: {{ lot.ends_at|date:"d.m.Y H:i" }}<br>
+  Стартовая цена: {{ lot.start_price }} · шаг: {{ lot.min_step }}</div>
+</div>
+
+{% if lot.status == "closed" %}
+  <div class="card win">
+  {% if lot.winner %}🏆 Победитель: <b>{{ lot.winner }}</b>, итоговая цена: <b>{{ lot.final_price }}</b>
+  {% else %}Торги завершены без ставок — победителя нет.{% endif %}</div>
+{% elif user == lot.owner %}
+  <div class="card meta">Вы продавец этого лота и не можете делать ставки.</div>
+{% else %}
+  <div class="card">
+  <form method="post" class="bid-form">{% csrf_token %}
+    {{ form.amount }} <button>Сделать ставку</button>
+    <small>минимум: {{ lot.min_next_bid }} · доступно монет: {{ wallet_available|floatformat:"2g" }}</small>
+  </form>
+  {% for e in form.amount.errors %}<div class="err">{{ e }}</div>{% endfor %}
+  </div>
+{% endif %}
+
+<h3>История ставок</h3>
+<div class="card table"><table>
+<tr><th>Участник</th><th>Сумма</th><th>Время</th></tr>
+{% for b in bids %}<tr><td>{{ b.bidder }}</td><td><b>{{ b.amount }}</b></td><td class="meta">{{ b.created_at|date:"d.m.Y H:i:s" }}</td></tr>
+{% empty %}<tr><td colspan="3" class="meta">Ставок пока нет.</td></tr>{% endfor %}
+</table></div>
+{% endblock %}

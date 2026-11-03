@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Учебный аукцион{% endblock %}</title>
+<style>
+:root{
+  --text:#f4f2ff; --muted:#b9b4d8; --accent:#8b7bff; --accent2:#38e0c2;
+  --glass:rgba(255,255,255,.08); --glass-hover:rgba(255,255,255,.18); --line:rgba(255,255,255,.22);
+}
+*{box-sizing:border-box}
+body{
+  margin:0; min-height:100vh; color:var(--text);
+  font-family:"Segoe UI",system-ui,-apple-system,sans-serif; line-height:1.5;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(139,123,255,.45), transparent 45%),
+    radial-gradient(circle at 85% 20%, rgba(56,224,194,.30), transparent 40%),
+    radial-gradient(circle at 50% 100%, rgba(255,107,160,.30), transparent 50%),
+    #15122b;
+  background-attachment:fixed;
+}
+.wrap{max-width:920px;margin:0 auto;padding:1.2rem}
+a{color:var(--accent2);text-decoration:none} a:hover{text-decoration:underline}
+h2{font-size:1.9rem;margin:.6rem 0 1rem} h3{margin-top:2rem}
+
+/* навигация */
+nav{
+  display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;
+  padding:.7rem 1rem;margin-bottom:1rem;border-radius:999px;
+  background:var(--glass);border:1px solid var(--line);backdrop-filter:blur(14px);
+}
+nav .logo{font-weight:700;font-size:1.15rem;color:var(--text)} nav .sp{flex:1}
+nav form{margin:0;display:inline}
+
+/* круглые прозрачные кнопки */
+button,.btn{
+  display:inline-block;cursor:pointer;font:inherit;font-weight:600;color:var(--text);
+  padding:.5rem 1.3rem;border-radius:999px;
+  background:rgba(255,255,255,.07);border:1.5px solid var(--line);
+  backdrop-filter:blur(8px);transition:.2s;text-decoration:none;
+}
+button:hover,.btn:hover{
+  background:var(--glass-hover);border-color:var(--accent2);
+  box-shadow:0 0 18px rgba(56,224,194,.35);transform:translateY(-1px);text-decoration:none;
+}
+button:active,.btn:active{transform:translateY(0)}
+.btn.primary,form button:not(nav button){border-color:var(--accent)}
+
+/* карточки */
+.card{
+  padding:1rem 1.3rem;margin:.8rem 0;border-radius:22px;
+  background:var(--glass);border:1px solid var(--line);backdrop-filter:blur(14px);
+  box-shadow:0 8px 30px rgba(0,0,0,.25);transition:.2s;
+}
+a.card-link{display:block;color:inherit;text-decoration:none}
+a.card-link:hover .card{transform:translateY(-3px);border-color:var(--accent)}
+.card .title{font-size:1.2rem;font-weight:700}
+.meta{color:var(--muted);font-size:.92rem}
+.price{font-size:1.5rem;font-weight:800;color:var(--accent2)}
+.win{border-color:#ffd166;background:rgba(255,209,102,.12)}
+
+/* бейджи */
+.badge{font-size:.78rem;padding:.15rem .7rem;border-radius:999px;border:1px solid var(--line);vertical-align:middle}
+.badge.open{color:#7dffb0;border-color:#7dffb0;background:rgba(125,255,176,.1)}
+.badge.closed{color:#ff9aa8;border-color:#ff9aa8;background:rgba(255,154,168,.1)}
+
+/* фильтры */
+.filters{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.8rem}
+.filters .btn.active{background:var(--glass-hover);border-color:var(--accent2)}
+
+/* формы */
+input,textarea,select{
+  font:inherit;color:var(--text);padding:.55rem 1rem;max-width:100%;
+  background:rgba(255,255,255,.06);border:1.5px solid var(--line);border-radius:16px;outline:none;
+}
+input:focus,textarea:focus{border-color:var(--accent2);box-shadow:0 0 0 3px rgba(56,224,194,.2)}
+textarea{width:100%;min-height:110px} input[type=text],input[type=password],input[type=number]{border-radius:999px}
+form p{margin:.8rem 0} form label{display:block;margin-bottom:.25rem;color:var(--muted)}
+.helptext,.card small,form small{color:var(--muted);font-size:.85rem}
+ul.errorlist{list-style:none;padding:0;margin:.2rem 0;color:#ff9aa8}
+.err{color:#ff9aa8;margin-top:.3rem}
+.bid-form{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center}
+.bid-form p{margin:0}
+
+/* таблица */
+.table{padding:.4rem 1rem}
+table{width:100%;border-collapse:collapse}
+td,th{padding:.55rem .4rem;border-bottom:1px solid rgba(255,255,255,.1);text-align:left}
+th{color:var(--muted);font-weight:600} tr:last-child td{border-bottom:none}
+
+/* сообщения */
+.msg{padding:.6rem 1.2rem;border-radius:999px;background:rgba(125,255,176,.14);border:1px solid #7dffb0}
+.demo{text-align:center;font-size:.85rem;color:var(--muted);margin:.2rem 0 1rem}
+
+nav .btn,nav button{padding:.35rem .9rem;font-size:.9rem}
+.wallet{display:inline-flex;gap:.35rem;align-items:center;padding:.35rem 1rem;border-radius:999px;
+  color:#ffd166;background:rgba(255,209,102,.12);border:1.5px solid rgba(255,209,102,.6);white-space:nowrap}
+.wallet:hover{text-decoration:none;box-shadow:0 0 16px rgba(255,209,102,.4)}
+.wallet span{font-size:.8rem;opacity:.8}
+.up{color:#7dffb0}.down{color:#ff9aa8}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:.8rem}
+.grid .card{margin:0}
+svg.spark{display:block;width:100%;height:auto}
+.trade-form{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center}
+.trade-form p{margin:0}
+button.buy{border-color:#7dffb0}button.sell{border-color:#ff9aa8}
+.stats{display:flex;gap:2rem;flex-wrap:wrap}.stats div{min-width:120px}
+</style></head><body><div class="wrap">
+<nav>
+  {% if user.is_authenticated %}
+  <a class="wallet" href="{% url 'portfolio' %}" title="Доступно для ставок и покупок: {{ wallet_available|floatformat:'2g' }}">
+    🪙 <b>{{ wallet.balance|floatformat:"2g" }}</b> <span>монет</span></a>
+  {% endif %}
+  <a class="logo" href="{% url 'lot_list' %}">🔨 Учебный аукцион</a>
+  <span class="sp"></span>
+  <a class="btn" href="{% url 'lot_list' %}">Лоты</a>
+  <a class="btn" href="{% url 'market' %}">📈 Биржа</a>
+  <a class="btn" href="{% url 'lot_create' %}">＋ Лот</a>
+  {% if user.is_authenticated %}
+    <a class="btn" href="{% url 'portfolio' %}">💼 Портфель</a>
+    <a class="btn" href="{% url 'my_activity' %}">👤 {{ user.username }}</a>
+    <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button>Выйти</button></form>
+  {% else %}
+    <a class="btn" href="{% url 'login' %}">Войти</a>
+    <a class="btn" href="{% url 'register' %}">Регистрация</a>
+  {% endif %}
+</nav>
+<p class="demo">Учебная платформа: все суммы условные, реальные платежи не проводятся.</p>
+{% for m in messages %}<p class="msg">{{ m }}</p>{% endfor %}
+{% block content %}{% endblock %}
+</div></body></html>
